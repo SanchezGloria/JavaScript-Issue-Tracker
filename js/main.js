@@ -5,15 +5,15 @@ import ls from './service/ls.js';
 
 const addIssueBtn = document.querySelector('.btn.btn-primary');
 let issueDesc = document.getElementById('issueDescInput');
-
-console.log(addBtn);
-
 let issueSeverity = document.getElementById('issueSeverityInput');
 let issueAssignedTo = document.getElementById('issueAssignedToInput');
 let issuesList = document.getElementById('issuesList');
+
+// declare var, obj, arrays
+
 let issuesArray = [];
 
-const startApp = () => {
+function startApp() {
   if (ls.isValid()) {
     issuesArray = ls.get();
     render();
@@ -21,10 +21,10 @@ const startApp = () => {
     ls.set(issuesArray);
     render();
   }
-};
+}
 
-function paintNewIssue(e) {
-  e.preventDefault();
+function paintNewIssue(ev) {
+  ev.preventDefault();
 
   let issueId = chance.guid();
   let issueStatus = 'Open';
@@ -45,20 +45,17 @@ function paintNewIssue(e) {
 }
 
 function handleIssue(ev) {
-  debugger;
   const dataset = ev.currentTarget.dataset;
   if (dataset.action === 'close-issue') {
     const id = ev.currentTarget.dataset.issueId;
     const issueFound = issuesArray.find((item) => item.id === id);
     if (issueFound.status === 'Open') {
       issueFound.status = 'Closed';
-      console.log(issueFound.status);
     }
   } else if (dataset.action === 'delete-issue') {
     const id = ev.currentTarget.dataset.issueId;
     const issueFound = issuesArray.findIndex((item) => item.id === id);
     issuesArray.splice(issueFound, 1);
-    console.log(issuesArray);
   }
   ls.set(issuesArray);
   render();
