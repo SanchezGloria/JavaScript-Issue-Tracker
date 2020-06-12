@@ -3,8 +3,7 @@ import ls from './service/ls.js';
 
 // get DOM elements
 
-const addBtn = document.querySelector('.btn.btn-primary');
-// const addBtn = document.getElementById('issueInputForm');
+const addIssueBtn = document.querySelector('.btn.btn-primary');
 let issueDesc = document.getElementById('issueDescInput');
 
 console.log(addBtn);
@@ -12,32 +11,21 @@ console.log(addBtn);
 let issueSeverity = document.getElementById('issueSeverityInput');
 let issueAssignedTo = document.getElementById('issueAssignedToInput');
 let issuesList = document.getElementById('issuesList');
-// let btnDelete = document.querySelector('.js-btn');
-// console.log(btnDelete);
-
-// variables, constants, objects
-// let issues = {};
 let issuesArray = [];
 
 const startApp = () => {
   if (ls.isValid()) {
     issuesArray = ls.get();
     render();
-    // newIssue.render(issuesArray);
-    // listenIssueEvents();
   } else {
     ls.set(issuesArray);
     render();
-    // listenIssueEvents();
   }
 };
 
-function saveIssue(e) {
-  let issueBtns = document.querySelectorAll('.js-click');
-  console.log(issueBtns);
-
+function paintNewIssue(e) {
   e.preventDefault();
-  // let issuesArray = [];
+
   let issueId = chance.guid();
   let issueStatus = 'Open';
   let issue = {
@@ -47,11 +35,11 @@ function saveIssue(e) {
     assignedTo: issueAssignedTo.value,
     status: issueStatus,
   };
+
   let issueIndex = issuesArray.findIndex((item) => item.id === issue.id);
   if (issueIndex === -1) {
     issuesArray.push(issue);
-    newIssue.render(issuesArray);
-    // listenIssueEvents();
+    render();
   }
   ls.set(issuesArray);
 }
@@ -65,37 +53,33 @@ function handleIssue(ev) {
     if (issueFound.status === 'Open') {
       issueFound.status = 'Closed';
       console.log(issueFound.status);
-      // newIssue.render(issuesArray);
-      // ls.set(issuesArray);
     }
   } else if (dataset.action === 'delete-issue') {
     const id = ev.currentTarget.dataset.issueId;
     const issueFound = issuesArray.findIndex((item) => item.id === id);
     issuesArray.splice(issueFound, 1);
     console.log(issuesArray);
-    // newIssue.render(issuesArray);
-    // ls.set(issuesArray);
   }
   ls.set(issuesArray);
   render();
 }
 
-// listeners
+// render
 
 function render() {
   newIssue.render(issuesArray);
-  listenEvents('.js-click', 'click', handleIssue);
+  listenEvents();
 }
 
-const listenEvents = (selector, eventType, eventHandler) => {
-  debugger;
-  // clase, evento, tipo
-  const elements = document.querySelectorAll(selector);
-  for (const element of elements) {
-    element.addEventListener(eventType, eventHandler);
-  }
-};
+// listeners
 
-addBtn.addEventListener('click', saveIssue);
+addIssueBtn.addEventListener('click', paintNewIssue);
+
+function listenEvents() {
+  const elements = document.querySelectorAll('.js-click');
+  for (const element of elements) {
+    element.addEventListener('click', handleIssue);
+  }
+}
 
 startApp();
